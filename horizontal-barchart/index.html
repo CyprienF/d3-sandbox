@@ -1,0 +1,79 @@
+<html>
+	<head>
+		<title>D3 sandbox</title>
+		<script src="https://d3js.org/d3.v7.min.js"></script>
+		<style>
+			.labels {
+				text-anchor: end;
+			}
+
+			.bars {
+				fill: steelblue;
+			}
+
+			.bars rect:hover {
+				fill: orange;
+			}
+
+			.tooltip {
+				color: #fff;
+				background-color: #000;
+				position: absolute;
+				pointer-events: none;
+				opacity: 0;
+				border-radius: 5px;
+				padding: 5px;
+				font-size: 0.9rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<svg width="1000" height="400">
+			<g class="labels" transform="translate(75, 22)"></g>
+			<g class="bars" transform="translate(80, 10)"></g>
+		</svg>
+	</body>
+
+	<script>
+		const cities = [
+			{ id: 1, city: 'Lyon', population: 100000 },
+			{ id: 2, city: 'London', population: 400000 },
+			{ id: 3, city: 'New-York', population: 800000 }
+		];
+
+		const tip = d3.select('body')
+			.append('div')
+			.attr('class', 'tooltip');
+
+		d3.select('.labels')
+			.selectAll('text')
+			.data(cities)
+			.join('text')
+			.attr('y', (d, i) => i * 16)
+			.text(d => d.city);	
+
+		d3.select('.bars')
+			.selectAll('rect')
+			.data(cities)
+			.join('rect')
+			.attr('y', (d, i) => i * 16)
+			.attr('width', d => 0.0005 * d.population)
+			.attr('height', 15)
+			.on('mouseover', (event, d) => {
+				tip.transition()
+					.duration(200)
+					.style('opacity', 0.9)
+
+				tip.html('Population: ' + d.population + ' inhabitants')
+					.style('left', (event.pageX) + 'px')
+     			.style('top', (event.pageY) + 'px');
+			})
+			.on('mouseout', () => {
+				tip.transition()
+					.duration(500)
+					.style('opacity', 0);
+			});
+	</script>
+
+</html>
