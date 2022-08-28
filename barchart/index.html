@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<title>D3 sandbox - barchart</title>
+		<script src="https://d3js.org/d3.v7.min.js"></script>
+		<style>
+			
+		</style>
+	</head>
+
+	<body>
+		<select id="years">
+		</select>
+		
+	</body>
+
+	<script>
+		const fetchData = async () => {
+			return await d3.csv('./dataset.csv');
+		};
+
+		const generateYears = (start, end) => {
+			return [...Array(end - start + 1).keys()].map(x => x + start);
+		};
+
+		const createYearsSelect = (start, end) => {
+			const select = document.getElementById('years');
+			generateYears(start, end).forEach(year => {
+				select.add(new Option(year, year));
+			});
+		};
+
+		(async () => {
+  		const data = await fetchData();
+			const years = createYearsSelect(1960, 2021);
+		})();
+	</script>
+
+</html>
