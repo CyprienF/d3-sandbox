@@ -10,12 +10,35 @@
 	<body>
 		<select id="years">
 		</select>
-		
+
+		<div id="chart"></siv>
 	</body>
 
 	<script>
 		const fetchData = async () => {
 			return await d3.csv('./dataset.csv');
+		};
+
+		const getMinFromYear = (data, year) => {
+			return d3.min(data.map(d => d[year]));
+		};
+		
+		const getMaxFromYear = (data, year) => {
+			return d3.max(data.map(d => d[year]));
+		};
+
+		const drawBarchart = (data, selectedYear) => {
+			const margins = { top: 20, bottom: 20, left: 20, right: 20 };
+			const width = 800 - margins.left - margins.right;
+			const height = 600 - margins.top - margins.bottom;
+
+			const xScale = d3.scaleBand()
+				.domain(data.map(d => d["Country Name"]))
+				.range([0, width]);
+
+			const yScale = d3.scaleLinear()
+				.domain([0, getMaxFromYear(selectedYear)])
+				.range([height, 0]);
 		};
 
 		const generateYears = (start, end) => {
@@ -30,8 +53,16 @@
 		};
 
 		(async () => {
-  		const data = await fetchData();
 			const years = createYearsSelect(1960, 2021);
+			const data = await fetchData();
+			let selectedYear = 1960;
+
+			const selectedYearSelect = document.getElementById('years');
+			selectedYearSelect.addEventListener('change', () => {
+				selectedYear = selectedYearSelect.value;
+			});
+
+			drawBarchart(data, selectedYear);
 		})();
 	</script>
 
